@@ -2,9 +2,9 @@ const express = require('express')
 
 const router = express.Router({ mergeParams: true })
 
-router.use('/', require('./authRoutes'))
-router.use('/order', require('./orderRoutes'))
-router.use('/product', require('./productRoutes'))
-router.use('/user', require('./userRoutes'))
+router.use('/', require('./auth.routes'))
+router.use('/order', require('./order.routes'))
+router.use('/product', require('./product.routes'))
+router.use('/user', require('./user.routes'))
 
 module.exports = router
