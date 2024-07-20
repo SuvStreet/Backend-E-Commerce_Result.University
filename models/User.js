@@ -22,7 +22,7 @@ const userSchema = mongoose.Schema({
 		type: String,
 		default: 'User',
 	},
-	imgUserUrl: {
+	img_user_url: {
 		type: String,
 		validate: {
 			validator: validator.isURL,
@@ -35,11 +35,11 @@ const userSchema = mongoose.Schema({
 		type: String,
 		default: roles.USER,
 	},
-	createdAt: {
+	created_at: {
 		type: Date,
 		required: true,
 	},
-	updatedAt: {
+	updated_at: {
 		type: Date,
 		required: true,
 	},
