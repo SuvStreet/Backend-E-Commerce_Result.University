@@ -4,6 +4,7 @@ const express = require('express')
 const chalk = require('chalk')
 const mongoose = require('mongoose')
 const cors = require('cors')
+const routes = require('./routes')
 
 const port = 3005
 const app = express()
@@ -12,11 +13,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 
-app.post('/', async (req, res) => {
-	const { username, password } = req.body
-	console.log(username, password)
-	res.send('Hello World!')
-})
+app.use('/', routes)
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING).then(() => {
 	app.listen(port, () => {
