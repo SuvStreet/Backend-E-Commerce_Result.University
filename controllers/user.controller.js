@@ -21,7 +21,7 @@ async function register(email, password, created_at, updated_at) {
 
 	console.log(chalk.bgGreen(`Пользователь ${user._id} успешно зарегистрировался`))
 
-	return { token }
+	return { token, user }
 }
 
 async function login(email, password) {
@@ -39,7 +39,7 @@ async function login(email, password) {
 
 	console.log(chalk.bgGreen(`Пользователь ${user._id} успешно авторизовался`))
 
-	return { token: generate({ id: user._id }) }
+	return { token: generate({ id: user._id }), user }
 }
 
 module.exports = {

@@ -10,4 +10,8 @@ module.exports = {
 	verify(token) {
 		return jwt.verify(token, process.env.JWT_SECRET)
 	},
+
+	decode(token) {
+		return jwt.decode(token)
+	},
 }
