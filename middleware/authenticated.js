@@ -8,7 +8,7 @@ module.exports = async function (req, res, next) {
 		const user = await User.findOne({ _id: tokenData.id })
 
 		if (!user) {
-			res.send({ error: 'Авторизованного пользователя нет!' })
+			res.status(401).send({ error: 'Авторизованного пользователя нет!' })
 
 			return
 		}
