@@ -5,7 +5,7 @@ module.exports = function (userDb) {
 		imgUserUrl: userDb.img_user_url,
 		email: userDb.email,
 		roleId: userDb.role_id,
-		createdAt: userDb.created_at,
-		updatedAt: userDb.updated_at,
+		createdAt: userDb.createdAt,
+		updatedAt: userDb.updatedAt,
 	}
 }

@@ -1,5 +1,5 @@
 const express = require('express')
-const { register, login } = require('../controllers/user.controller')
+const { register, login } = require('../controllers/auth.controller')
 const mapUser = require('../helpers/mapUser')
 const { decode } = require('../helpers/token')
 const authenticated = require('../middleware/authenticated')
@@ -55,14 +55,6 @@ router.post('/authorize', async (req, res) => {
 				},
 			},
 		})
-	} catch (err) {
-		res.send({ error: err.message || 'Неизвестная ошибка...', user: null })
-	}
-})
-
-router.get('/user', authenticated, async (req, res) => {
-	try {
-		res.send({ error: null, data: { user: mapUser(req.user) } })
 	} catch (err) {
 		res.send({ error: err.message || 'Неизвестная ошибка...', user: null })
 	}

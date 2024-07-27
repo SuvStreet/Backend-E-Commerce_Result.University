@@ -3,46 +3,30 @@ const User = require('../models/User')
 const { generate } = require('../helpers/token')
 const chalk = require('chalk')
 
-async function register(email, password, created_at, updated_at) {
-	if (!password) {
-		throw new Error('Нужно ввести пароль!')
+async function editUser(id, user) {
+	try {
+		const newUser = await User.findByIdAndUpdate(
+			id,
+			{ $set: { ...user, login: user.login || 'User' } },
+			{
+				new: true,
+				runValidators: true,
+			},
+		)
+
+		console.log(
+			chalk.bgGreen(`Пользователь успешно изменён на ${newUser.login}`),
+		)
+
+		return newUser
+	} catch (err) {
+		console.log(
+			chalk.bgRed(`При изменении пользователя пошло что-то не так: ${err.message}`),
+		)
+		throw new Error(err.message || 'Неизвестная ошибка...')
 	}
-
-	const hashedPassword = await bcrypt.hash(password, 10)
-
-	const user = await User.create({
-		email,
-		password: hashedPassword,
-		created_at,
-		updated_at,
-	})
-
-	const token = generate({ id: user._id })
-
-	console.log(chalk.bgGreen(`Пользователь ${user._id} успешно зарегистрировался`))
-
-	return { token, user }
-}
-
-async function login(email, password) {
-	const user = await User.findOne({ email })
-
-	if (!user) {
-		throw new Error('Пользователь не найден!')
-	}
-
-	const isPasswordCorrect = await bcrypt.compare(password, user.password)
-
-	if (!isPasswordCorrect) {
-		throw new Error('Пароль неверный!')
-	}
-
-	console.log(chalk.bgGreen(`Пользователь ${user._id} успешно авторизовался`))
-
-	return { token: generate({ id: user._id }), user }
 }
 
 module.exports = {
-	login,
-	register,
+	editUser,
 }

@@ -29,20 +29,12 @@ const userSchema = mongoose.Schema({
 			message: 'Картинка должна быть ссылкой!',
 		},
 		default:
-			'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+			'https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_white_tone_icon_159368.png',
 	},
 	role_id: {
 		type: Number,
 		default: roles.USER,
-	},
-	created_at: {
-		type: Date,
-		required: true,
-	},
-	updated_at: {
-		type: Date,
-		required: true,
-	},
-})
+	}
+}, { timestamps: true })
 
 module.exports = mongoose.model('User', userSchema)
