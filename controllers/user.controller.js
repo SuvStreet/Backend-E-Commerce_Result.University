@@ -1,6 +1,4 @@
-const bcrypt = require('bcrypt')
 const User = require('../models/User')
-const { generate } = require('../helpers/token')
 const chalk = require('chalk')
 
 async function editUser(id, user) {
@@ -14,9 +12,7 @@ async function editUser(id, user) {
 			},
 		)
 
-		console.log(
-			chalk.bgGreen(`Пользователь успешно изменён на ${newUser.login}`),
-		)
+		console.log(chalk.bgGreen(`Пользователь успешно изменён на ${newUser.login}`))
 
 		return newUser
 	} catch (err) {

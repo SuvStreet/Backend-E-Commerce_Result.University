@@ -18,11 +18,16 @@ async function register(email, password) {
 
 		const token = generate({ id: user._id })
 
-		console.log(chalk.bgGreen(`Пользователь ${user._id} успешно зарегистрировался`))
+		console.log(chalk.bgGreen(`Пользователь ${user.email} успешно зарегистрировался`))
 
 		return { token, user }
 	} catch (err) {
+		if (err.code === 11000) {
+			throw new Error('Такой пользователь уже существует!')
+		}
+
 		console.log(chalk.bgRed(`При регистрации пошло что-то не так: ${err.message}`))
+
 		throw new Error(err.message || 'Неизвестная ошибка...')
 	}
 }
@@ -41,7 +46,7 @@ async function login(email, password) {
 			throw new Error('Пароль неверный!')
 		}
 
-		console.log(chalk.bgGreen(`Пользователь ${user._id} успешно авторизовался`))
+		console.log(chalk.bgGreen(`Пользователь ${user.email} успешно авторизовался`))
 
 		return { token: generate({ id: user._id }), user }
 	} catch (err) {
