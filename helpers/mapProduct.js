@@ -4,7 +4,7 @@ module.exports = function (productDb) {
 		name: productDb.name,
 		imgUrl: productDb.img_url,
 		description: productDb.description,
-		categoryId: productDb.category_id,
+		subCategoryId: productDb.subcategory_id,
 		brand: productDb.brand,
 		discount: productDb.discount,
 		features: productDb.features,

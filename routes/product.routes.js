@@ -17,13 +17,13 @@ router.get('/:id', async (req, res) => {
 	}
 })
 
-router.post('/add', authenticated, hasRole(ROLE.ADMIN), async (req, res) => {
+router.post('/add', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 	try {
 		const { product } = await addProduct(
 			req.body.name,
 			req.body.img_url,
 			req.body.description,
-			req.body.category_id,
+			req.body.subcategory_id,
 			req.body.brand,
 			req.body.features,
 			req.body.price,

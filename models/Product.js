@@ -18,10 +18,10 @@ const productSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	category_id: {
-		type: mongoose.Schema.Types.Number,
-		ref: 'Category',
-		required: true,
+	subcategory_id: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Subcategory',
+		required: true
 	},
 	brand: {
 		type: String,
