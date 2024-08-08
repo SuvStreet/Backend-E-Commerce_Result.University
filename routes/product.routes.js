@@ -9,9 +9,15 @@ const router = express.Router({ mergeParams: true })
 
 router.get('/:id', async (req, res) => {
 	try {
-		const { product } = await getProduct(req.params.id)
+		const { product } = await getProduct(
+			req.params.id,
+			req.query.variant,
+		)
 
-		res.send({ error: null, data: { product: mapProduct(product) } })
+		res.send({
+			error: null,
+			data: { product: mapProduct(product) },
+		})
 	} catch (err) {
 		res.send({ error: err.message || 'Неизвестная ошибка...', data: null })
 	}
@@ -19,18 +25,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/add', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 	try {
-		const { product } = await addProduct(
-			req.body.name,
-			req.body.img_url,
-			req.body.description,
-			req.body.subcategory_id,
-			req.body.brand,
-			req.body.features,
-			req.body.price,
-			req.body.quantity,
-			req.body.discount,
-			req.body.rating,
-		)
+		const { product } = await addProduct(req.body)
 
 		res.send({ error: null, data: { product: mapProduct(product) } })
 	} catch (err) {

@@ -1,46 +1,24 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 
-const productSchema = mongoose.Schema({
-	name: {
+const featureSchema = mongoose.Schema({
+	key: {
 		type: String,
 		required: true,
 	},
-	img_url: {
-		type: String,
-		validate: {
-			validator: validator.isURL,
-			message: 'Картинка должна быть ссылкой!',
-		},
-		required: true,
-	},
-	description: {
+	value: {
 		type: String,
 		required: true,
 	},
-	subcategory_id: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Subcategory',
-		required: true
-	},
-	brand: {
-		type: String,
-		required: true,
-	},
+})
+
+const variantSchema = mongoose.Schema({
+	additionalFeatures: [featureSchema],
 	discount: {
 		type: Number,
 		default: 0,
 	},
-	features: {
-		type: Map,
-		of: String,
-		required: true,
-	},
 	price: {
-		type: Number,
-		required: true,
-	},
-	quantity: {
 		type: Number,
 		required: true,
 	},
@@ -55,5 +33,33 @@ const productSchema = mongoose.Schema({
 		},
 	],
 })
+
+const productSchema = mongoose.Schema({
+	name: {
+		type: String,
+		required: true,
+	},
+	description: {
+		type: String,
+		required: true,
+	},
+	images: [
+		{
+			type: String,
+			validate: {
+				validator: validator.isURL,
+				message: 'Картинка должна быть ссылкой!',
+			},
+			required: true,
+		},
+	],
+	brand: {
+		type: String,
+		required: true,
+	},
+	features: [featureSchema],
+	variants: [variantSchema],
+})
+
 
 module.exports = mongoose.model('Product', productSchema)

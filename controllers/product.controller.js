@@ -2,30 +2,12 @@ const Product = require('../models/Product')
 const chalk = require('chalk')
 const SubCategory = require('../models/Sub-category')
 
-async function addProduct(
-	name,
-	img_url,
-	description,
-	subcategory_id,
-	brand,
-	features,
-	price,
-	quantity,
-	discount,
-	rating,
-) {
+async function addProduct(dataProducts) {
 	try {
+		const { subcategory_id } = dataProducts
+
 		const product = await Product.create({
-			name,
-			img_url,
-			description,
-			subcategory_id,
-			brand,
-			features,
-			price,
-			quantity,
-			discount,
-			rating,
+			...dataProducts,
 		})
 
 		await SubCategory.findByIdAndUpdate(subcategory_id, {
@@ -45,7 +27,11 @@ async function addProduct(
 
 async function getProduct(id) {
 	try {
-		const product = await Product.findOne({ _id: id })
+		const product = await Product.findById(id)
+
+		if (!product) {
+			throw new Error('Продукт не найден!')
+		}
 
 		console.log(chalk.bgGreen(`Продукт "${product.name}" успешно получен`))
 

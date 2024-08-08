@@ -6,6 +6,7 @@ async function createCategory(name) {
 		const category = await Category.create({ name })
 
 		console.log(chalk.bgGreen(`Категория "${category.name}" успешно добавлена`))
+
 		return { category }
 	} catch (err) {
 		console.log(
@@ -15,4 +16,19 @@ async function createCategory(name) {
 	}
 }
 
-module.exports = { createCategory }
+async function getCategories() {
+	try {
+		const categories = await Category.find()
+
+		console.log(chalk.bgGreen('Категории успешно получены'))
+
+		return categories
+	} catch (err) {
+		console.log(
+			chalk.bgRed(`При получении категорий пошло что-то не так: ${err.message}`),
+		)
+		throw new Error(err.message || 'Неизвестная ошибка...')
+	}
+}
+
+module.exports = { createCategory, getCategories }
