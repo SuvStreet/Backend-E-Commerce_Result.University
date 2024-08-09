@@ -4,7 +4,7 @@ const mapComment = require('./mapComment')
 function mapFeature(featureDb) {
 	return {
 		id: featureDb._id,
-		name: featureDb.name,
+		key: featureDb.key,
 		value: featureDb.value,
 	}
 }

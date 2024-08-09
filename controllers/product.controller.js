@@ -10,9 +10,14 @@ async function addProduct(dataProducts) {
 			...dataProducts,
 		})
 
-		await SubCategory.findByIdAndUpdate(subcategory_id, {
+		const subcategory = await SubCategory.findByIdAndUpdate(subcategory_id, {
 			$push: { products: product },
 		})
+
+		if (!subcategory) {
+			await Product.findByIdAndDelete(product)
+			throw new Error('Подкатегория не найдена')
+		}
 
 		console.log(chalk.bgGreen(`Продукт "${product.name}" успешно добавлен`))
 
@@ -42,4 +47,23 @@ async function getProduct(id) {
 	}
 }
 
-module.exports = { addProduct, getProduct }
+async function listProducts(subcategory_id) {
+	try {
+		const products = await Product.find({ subcategory_id })
+
+		if (!products.length) {
+			throw new Error('Продукты не найдены!')
+		}
+
+		console.log(chalk.bgGreen('Продукты успешно получены'))
+
+		return products
+	} catch (err) {
+		console.log(
+			chalk.bgRed(`При получении продуктов пошло что-то не так: ${err.message}`),
+		)
+		throw new Error(err.message || 'Неизвестная ошибка...')
+	}
+}
+
+module.exports = { addProduct, getProduct, listProducts }
