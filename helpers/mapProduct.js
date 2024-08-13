@@ -16,6 +16,7 @@ function mapVariant(variantDb) {
 			mongoose.isObjectIdOrHexString(feature) ? feature : mapFeature(feature),
 		),
 		price: variantDb.price,
+		quantity: variantDb.quantity,
 		discount: variantDb.discount,
 		rating: variantDb.rating,
 		comments: variantDb.comments.map((comment) =>

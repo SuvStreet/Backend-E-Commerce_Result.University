@@ -49,7 +49,13 @@ async function getProduct(id) {
 
 async function listProducts(subcategory_id) {
 	try {
-		const products = await Product.find({ subcategory_id })
+		let products = []
+
+		if(subcategory_id){
+			products = await Product.find({ subcategory_id })
+		} else {
+			products = await Product.find().populate('subcategory_id')
+		}
 
 		if (!products.length) {
 			throw new Error('Продукты не найдены!')

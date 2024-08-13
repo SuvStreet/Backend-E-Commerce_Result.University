@@ -26,6 +26,10 @@ const variantSchema = mongoose.Schema({
 		type: Number,
 		default: 0,
 	},
+	quantity: {
+		type: Number,
+		default: 0,
+	},
 	comments: [
 		{
 			type: mongoose.Schema.Types.ObjectId,

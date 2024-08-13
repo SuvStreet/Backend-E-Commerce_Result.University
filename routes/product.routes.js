@@ -19,7 +19,6 @@ router.get('/subCategory/:id', async (req, res) => {
 			error: null,
 			data: { products: products.map(mapProduct) },
 		})
-
 	} catch (err) {
 		res.send({ error: err.message || 'Неизвестная ошибка...', data: null })
 	}
@@ -32,6 +31,19 @@ router.get('/:id', async (req, res) => {
 		res.send({
 			error: null,
 			data: { product: mapProduct(product) },
+		})
+	} catch (err) {
+		res.send({ error: err.message || 'Неизвестная ошибка...', data: null })
+	}
+})
+
+router.get('/', async (req, res) => {
+	try {
+		const products = await listProducts()
+
+		res.send({
+			error: null,
+			data: { products: products.map(mapProduct) },
 		})
 	} catch (err) {
 		res.send({ error: err.message || 'Неизвестная ошибка...', data: null })
