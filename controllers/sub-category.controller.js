@@ -27,18 +27,32 @@ async function createSubCategory(name, category_id, img_url) {
 
 async function getSubCategories(category_id) {
 	try {
-		const subCategories = await SubCategory.find({ category_id })
+		let subCategories = []
 
-		if (!subCategories.length) {
-			throw new Error('Подкатегории не найдены!')
+		if (category_id) {
+			subCategories = await SubCategory.find({ category_id })
+
+			if (!subCategories.length) {
+				throw new Error(`Список подкатегорий категории "${category_id}" не найдена!`)
+			}
+
+			console.log(chalk.bgGreen(`Список подкатегорий категории "${category_id}" успешно получена`))
+
+			return subCategories
 		}
 
-		console.log(chalk.bgGreen('Подкатегории успешно получены'))
+		subCategories = await SubCategory.find().populate('category_id')
+
+		if (!subCategories.length) {
+			throw new Error('Список подкатегорий не найден!')
+		}
+
+		console.log(chalk.bgGreen('Список подкатегорий успешно получен'))
 
 		return subCategories
 	} catch (err) {
 		console.log(
-			chalk.bgRed(`При получении подкатегорий пошло что-то не так: ${err.message}`),
+			chalk.bgRed(`При получении списка подкатегорий пошло что-то не так: ${err.message}`),
 		)
 		throw new Error(err.message || 'Неизвестная ошибка...')
 	}

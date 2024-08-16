@@ -18,7 +18,10 @@ async function createCategory(name) {
 
 async function getCategories() {
 	try {
-		const categories = await Category.find()
+		const categories = await Category.find().populate('subcategories').populate({
+			path: 'subcategories',
+			populate: { path: 'products' },
+		})
 
 		console.log(chalk.bgGreen('Категории успешно получены'))
 

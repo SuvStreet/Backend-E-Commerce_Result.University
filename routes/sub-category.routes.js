@@ -10,6 +10,15 @@ const mapSubCategory = require('../helpers/mapSubCategory')
 
 const router = express.Router({ mergeParams: true })
 
+router.get('/', async (req, res) => {
+	try {
+		const subCategories = await getSubCategories()
+		res.send({ error: null, data: { subCategories: subCategories.map(mapSubCategory) } })
+	} catch (err) {
+		res.send({ error: err.message || 'Неизвестная ошибка...', data: null })
+	}
+})
+
 router.get('/:id', async (req, res) => {
 	try {
 		const subCategories = await getSubCategories(req.params.id)

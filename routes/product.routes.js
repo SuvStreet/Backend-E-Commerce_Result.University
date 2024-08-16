@@ -37,7 +37,7 @@ router.get('/:id', async (req, res) => {
 	}
 })
 
-router.get('/', async (req, res) => {
+router.get('/', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 	try {
 		const products = await listProducts()
 
