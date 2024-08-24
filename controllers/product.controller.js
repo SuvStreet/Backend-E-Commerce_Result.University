@@ -51,7 +51,7 @@ async function listProducts(subcategory_id) {
 	try {
 		let products = []
 
-		if(subcategory_id){
+		if (subcategory_id) {
 			products = await Product.find({ subcategory_id })
 		} else {
 			products = await Product.find().populate('subcategory_id')
@@ -72,4 +72,48 @@ async function listProducts(subcategory_id) {
 	}
 }
 
-module.exports = { addProduct, getProduct, listProducts }
+async function editProduct(id, product) {
+	try {
+		const newProduct = await Product.findByIdAndUpdate(
+			id,
+			{
+				...product,
+			},
+			{ returnDocument: 'after' },
+		)
+
+		await newProduct.populate('subcategory_id')
+
+		console.log(chalk.bgGreen(`Продукт "${newProduct.name}" успешно изменён`))
+
+		return newProduct
+	} catch (err) {
+		console.log(
+			chalk.bgRed(`При получении продуктов пошло что-то не так: ${err.message}`),
+		)
+		throw new Error(err.message || 'Неизвестная ошибка...')
+	}
+}
+
+async function deleteProduct(product_id) {
+	try {
+		const product = await Product.findByIdAndDelete(product_id)
+
+		if (!product) {
+			throw new Error('Продукт не найден!')
+		}
+
+		await SubCategory.findByIdAndUpdate(product.subcategory_id, {
+			$pull: { products: product_id },
+		})
+
+		console.log(chalk.bgGreen(`Продукт "${product.name}" успешно удален`))
+	} catch (err) {
+		console.log(
+			chalk.bgRed(`При получении продуктов пошло что-то не так: ${err.message}`),
+		)
+		throw new Error(err.message || 'Неизвестная ошибка...')
+	}
+}
+
+module.exports = { addProduct, getProduct, listProducts, editProduct, deleteProduct }

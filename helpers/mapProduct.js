@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const mapComment = require('./mapComment')
+const mapSubCategory = require('./mapSubCategory')
 
 function mapFeature(featureDb) {
 	return {
@@ -31,7 +32,10 @@ module.exports = function (productDb) {
 		name: productDb.name,
 		images: productDb.images,
 		description: productDb.description,
-		subCategoryId: productDb.subcategory_id,
+		subCategoryId: {
+			id: productDb.subcategory_id._id,
+			name: productDb.subcategory_id.name,
+		},
 		brand: productDb.brand,
 		features: productDb.features.map((feature) =>
 			mongoose.isObjectIdOrHexString(feature) ? feature : mapFeature(feature),
