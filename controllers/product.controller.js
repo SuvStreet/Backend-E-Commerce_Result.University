@@ -76,9 +76,7 @@ async function editProduct(id, product) {
 	try {
 		const newProduct = await Product.findByIdAndUpdate(
 			id,
-			{
-				...product,
-			},
+			{ ...product },
 			{ returnDocument: 'after' },
 		)
 
