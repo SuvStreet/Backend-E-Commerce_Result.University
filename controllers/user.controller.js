@@ -24,9 +24,11 @@ async function editUser(id, user) {
 	}
 }
 
-async function getUserList() {
+async function getUserList(currentUserId) {
 	try {
-		const users = await User.find()
+		const users = await User.find({
+			_id: { $ne: currentUserId },
+		})
 
 		if (!users.length) {
 			throw new Error('Пользователи не найдены!')
@@ -56,8 +58,56 @@ function getRoles() {
 	]
 }
 
+async function editUserRole(id, role) {
+	try {
+		console.log('id :>> ', id)
+		console.log('role :>> ', role)
+
+		const updatedUser = await User.findByIdAndUpdate(
+			id,
+			{ role_id: role.role_id },
+			{
+				new: true,
+				// runValidators: true,
+			},
+		)
+
+		console.log(
+			chalk.bgGreen(`Роль пользователя успешно изменена на ${updatedUser.role_id}`),
+		)
+
+		return updatedUser
+	} catch (err) {
+		console.log(
+			chalk.bgRed(`При изменении пользователя пошло что-то не так: ${err.message}`),
+		)
+		throw new Error(err.message || 'Неизвестная ошибка...')
+	}
+}
+
+async function deleteUser(id) {
+	try {
+		const user = await User.findByIdAndDelete(id)
+
+		if (!user) {
+			throw new Error('Пользователь не найден!')
+		}
+
+		console.log(chalk.bgGreen(`Пользователь ${user.login} успешно удален`))
+
+		return user
+	} catch (err) {
+		console.log(
+			chalk.bgRed(`При удалении пользователя пошло что-то не так: ${err.message}`),
+		)
+		throw new Error(err.message || 'Неизвестная ошибка...')
+	}
+}
+
 module.exports = {
 	editUser,
 	getUserList,
 	getRoles,
+	editUserRole,
+	deleteUser,
 }

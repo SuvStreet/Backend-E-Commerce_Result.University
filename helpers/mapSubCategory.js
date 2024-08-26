@@ -1,6 +1,4 @@
 module.exports = function (subCategoryDb) {
-	console.log('subCategoryDb :>> ', subCategoryDb)
-
 	return {
 		id: subCategoryDb._id,
 		name: subCategoryDb.name,

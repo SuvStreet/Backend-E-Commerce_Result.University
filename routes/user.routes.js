@@ -1,7 +1,13 @@
 const express = require('express')
 const authenticated = require('../middleware/authenticated')
 const mapUser = require('../helpers/mapUser')
-const { editUser, getUserList, getRoles } = require('../controllers/user.controller')
+const {
+	editUser,
+	getUserList,
+	getRoles,
+	editUserRole,
+	deleteUser,
+} = require('../controllers/user.controller')
 const hasRole = require('../middleware/hasRole')
 const ROLE = require('../constants/roles')
 
@@ -27,7 +33,7 @@ router.get('/roles', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 
 router.get('/users', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 	try {
-		const users = await getUserList()
+		const users = await getUserList(req.user._id)
 
 		res.send({ error: null, data: { users: users.map(mapUser) } })
 	} catch (err) {
@@ -51,6 +57,27 @@ router.patch('/:id', authenticated, async (req, res) => {
 	} catch (err) {
 		res.send({ error: err.message || 'Неизвестная ошибка...', data: null })
 	}
+})
+
+router.patch('/role/:id', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
+	try {
+		const updatedUser = await editUserRole(req.params.id, { role_id: req.body.roleId })
+
+		res.send({
+			error: null,
+			data: {
+				user: mapUser(updatedUser),
+			},
+		})
+	} catch (err) {
+		res.send({ error: err.message || 'Неизвестная ошибка...', data: null })
+	}
+})
+
+router.delete('/:id', authenticated, async (req, res) => {
+	await deleteUser(req.params.id)
+
+	res.send({ error: null })
 })
 
 module.exports = router

@@ -12,7 +12,7 @@ const mapSubCategory = require('../helpers/mapSubCategory')
 
 const router = express.Router({ mergeParams: true })
 
-router.get('/', async (req, res) => {
+router.get('/', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 	try {
 		const subCategories = await getSubCategories()
 		res.send({ error: null, data: { subCategories: subCategories.map(mapSubCategory) } })
