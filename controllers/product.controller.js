@@ -74,17 +74,34 @@ async function listProducts(subcategory_id) {
 
 async function editProduct(id, product) {
 	try {
-		const newProduct = await Product.findByIdAndUpdate(
+		const oldProduct = await Product.findById(id)
+
+		if (!oldProduct) {
+			throw new Error('Продукт не найден!')
+		}
+
+		if (String(oldProduct.subcategory_id._id) !== String(product.subcategory_id)) {
+			await SubCategory.findByIdAndUpdate(oldProduct.subcategory_id._id, {
+				$pull: { products: id },
+			})
+			await SubCategory.findByIdAndUpdate(product.subcategory_id, {
+				$push: { products: id },
+			})
+		}
+
+		const updatedProduct = await Product.findByIdAndUpdate(
 			id,
 			{ ...product },
-			{ returnDocument: 'after' },
-		)
+			{ new: true },
+		).populate('subcategory_id')
 
-		await newProduct.populate('subcategory_id')
+		if (!updatedProduct) {
+			throw new Error('Ошибка обновления продукта!')
+		}
 
-		console.log(chalk.bgGreen(`Продукт "${newProduct.name}" успешно изменён`))
+		console.log(chalk.bgGreen(`Продукт "${updatedProduct.name}" успешно изменён`))
 
-		return newProduct
+		return updatedProduct
 	} catch (err) {
 		console.log(
 			chalk.bgRed(`При получении продуктов пошло что-то не так: ${err.message}`),

@@ -43,8 +43,13 @@ async function editCategory(category_id, name) {
 		const category = await Category.findByIdAndUpdate(
 			category_id,
 			{ name },
-			{ returnDocument: 'after' },
+			{ new: true },
 		)
+			.populate('subcategories')
+			.populate({
+				path: 'subcategories',
+				populate: { path: 'products' },
+			})
 
 		if (!category) {
 			throw new Error('Категория не найдена!')

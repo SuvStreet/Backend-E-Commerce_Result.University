@@ -13,7 +13,7 @@ const mapProduct = require('../helpers/mapProduct')
 
 const router = express.Router({ mergeParams: true })
 
-router.get('/subCategory/:id', async (req, res) => {
+router.get('/sub-category/:id', async (req, res) => {
 	try {
 		const products = await listProducts(req.params.id)
 

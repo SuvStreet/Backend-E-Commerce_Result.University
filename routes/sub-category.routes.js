@@ -2,6 +2,8 @@ const express = require('express')
 const {
 	createSubCategory,
 	getSubCategories,
+	editSubCategory,
+	deleteSubCategory,
 } = require('../controllers/sub-category.controller')
 const authenticated = require('../middleware/authenticated')
 const hasRole = require('../middleware/hasRole')
@@ -34,7 +36,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/add', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 	try {
-		const { subCategory } = await createSubCategory(
+		const subCategory = await createSubCategory(
 			req.body.name,
 			req.body.category_id,
 			req.body.img_url,
@@ -50,5 +52,31 @@ router.post('/add', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 		res.send({ error: err.message || 'Неизвестная ошибка...', data: null })
 	}
 })
+
+router.post('/edit/:id', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
+	try {
+		const updatedSubCategory = await editSubCategory(
+			req.params.id,
+			req.body.name,
+			req.body.category_id,
+			req.body.img_url,
+		)
+
+		res.send({ error: null, data: { subCategory: mapSubCategory(updatedSubCategory) } })
+	} catch (err) {
+		res.send({ error: err.message || 'Неизвестная ошибка...', data: null })
+	}
+})
+
+router.delete(
+	'/:sub_category_id',
+	authenticated,
+	hasRole([ROLE.ADMIN]),
+	async (req, res) => {
+		await deleteSubCategory(req.params.sub_category_id)
+
+		res.send({ error: null })
+	},
+)
 
 module.exports = router
