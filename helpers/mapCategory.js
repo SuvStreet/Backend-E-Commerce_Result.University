@@ -1,14 +1,12 @@
-const mongoose = require('mongoose')
-const mapSubCategory = require('./mapSubCategory')
-
 module.exports = function (categoryDb) {
 	return {
 		id: categoryDb._id,
 		name: categoryDb.name,
-		subcategories: categoryDb.subcategories.map((subcategory) =>
-			mongoose.isObjectIdOrHexString(subcategory)
-				? subcategory
-				: mapSubCategory(subcategory),
-		),
+		subcategories: categoryDb.subcategories.map((subcategory) => {
+			return {
+				id: subcategory._id,
+				name: subcategory.name,
+			}
+		})
 	}
 }

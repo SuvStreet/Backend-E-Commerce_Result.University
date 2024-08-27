@@ -1,5 +1,6 @@
 const Category = require('../models/Category')
 const SubCategory = require('../models/Sub-category')
+const Product = require('../models/Product')
 const chalk = require('chalk')
 
 async function createSubCategory(name, category_id, img_url) {
@@ -82,7 +83,9 @@ async function editSubCategory(id, name, category_id, img_url) {
 				img_url,
 			},
 			{ new: true },
-		).populate('category_id').populate('products')
+		)
+			.populate('category_id')
+			.populate('products')
 
 		if (!subCategory) {
 			throw new Error('Подкатегория не найдена!')
@@ -118,6 +121,10 @@ async function deleteSubCategory(id) {
 
 		await Category.findByIdAndUpdate(subCategory.category_id, {
 			$pull: { subcategories: id },
+		})
+
+		await Product.deleteMany({
+			_id: { $in: subCategory.products },
 		})
 
 		console.log(chalk.bgGreen(`Подкатегория "${subCategory.name}" успешно удалена`))
