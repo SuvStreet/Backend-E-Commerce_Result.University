@@ -12,32 +12,6 @@ const featureSchema = mongoose.Schema({
 	},
 })
 
-const variantSchema = mongoose.Schema({
-	additionalFeatures: [featureSchema],
-	discount: {
-		type: Number,
-		default: 0,
-	},
-	price: {
-		type: Number,
-		required: true,
-	},
-	rating: {
-		type: Number,
-		default: 0,
-	},
-	quantity: {
-		type: Number,
-		default: 0,
-	},
-	comments: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Comment',
-		},
-	],
-})
-
 const productSchema = mongoose.Schema({
 	name: {
 		type: String,
@@ -66,9 +40,29 @@ const productSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
+	discount: {
+		type: Number,
+		default: 0,
+	},
+	price: {
+		type: Number,
+		required: true,
+	},
+	rating: {
+		type: Number,
+		default: 0,
+	},
+	quantity: {
+		type: Number,
+		default: 0,
+	},
+	comments: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Comment',
+		},
+	],
 	features: [featureSchema],
-	variants: [variantSchema],
 })
-
 
 module.exports = mongoose.model('Product', productSchema)

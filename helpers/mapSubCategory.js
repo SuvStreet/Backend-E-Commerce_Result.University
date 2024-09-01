@@ -9,8 +9,7 @@ module.exports = function (subCategoryDb) {
 		imgUrl: subCategoryDb.img_url,
 		products: subCategoryDb.products.map((item) => {
 			return {
-				id: item._id,
-				variants: item.variants.length,
+				id: item._id
 			}
 		}),
 	}
