@@ -60,15 +60,11 @@ function getRoles() {
 
 async function editUserRole(id, role) {
 	try {
-		console.log('id :>> ', id)
-		console.log('role :>> ', role)
-
 		const updatedUser = await User.findByIdAndUpdate(
 			id,
 			{ role_id: role.role_id },
 			{
 				new: true,
-				// runValidators: true,
 			},
 		)
 
