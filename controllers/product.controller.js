@@ -40,7 +40,7 @@ async function getProduct(id) {
 
 		console.log(chalk.bgGreen(`Продукт "${product.name}" успешно получен`))
 
-		return { product }
+		return product
 	} catch (err) {
 		console.log(chalk.bgRed(`При получении продукта пошло что-то не так: ${err.message}`))
 		throw new Error('Продукт не найден!')

@@ -1,11 +1,10 @@
 const chalk = require('chalk')
 const Order = require('../models/Order')
 const Product = require('../models/Product')
+const Cart = require('../models/Cart')
 
 async function createOrder(cart, user_id) {
 	try {
-		// throw new Error('Тестовая ошибка')
-
 		const formatCart = {
 			items: cart.items.map((item) => {
 				return {
@@ -14,10 +13,10 @@ async function createOrder(cart, user_id) {
 					name: item.name,
 					price: item.price,
 					discount: item.discount,
-					img_url: item.img,
-					discounted_price: item.discountedPrice,
+					img_url: item.imgUrl,
 				}
 			}),
+			id: cart.id,
 			totalPrice: cart.totalPrice,
 			user_id,
 		}
@@ -51,6 +50,8 @@ async function createOrder(cart, user_id) {
 		const order = await Order.create({ ...formatCart })
 
 		console.log(chalk.bgGreen('Заказ успешно создан!'))
+
+		await Cart.findByIdAndDelete(formatCart.id)
 
 		return order
 	} catch (err) {

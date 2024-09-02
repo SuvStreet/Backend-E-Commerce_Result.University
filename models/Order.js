@@ -30,10 +30,6 @@ const orderSchema = new mongoose.Schema(
 					type: Number,
 					required: true,
 				},
-				discounted_price: {
-					type: Number,
-					required: true,
-				},
 				quantity: {
 					type: Number,
 					required: true,

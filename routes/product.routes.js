@@ -28,7 +28,7 @@ router.get('/sub-category/:id', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
 	try {
-		const { product } = await getProduct(req.params.id, req.query.variant)
+		const product = await getProduct(req.params.id, req.query.variant)
 
 		res.send({
 			error: null,
