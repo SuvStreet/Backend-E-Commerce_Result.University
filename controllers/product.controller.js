@@ -47,14 +47,30 @@ async function getProduct(id) {
 	}
 }
 
-async function listProducts(subcategory_id) {
+async function listProducts({ subcategory_id, page = 1, limit = 5 }) {
 	try {
 		let products = []
+		let count = 0
+
+		console.log('subcategory_id :>> ', subcategory_id)
 
 		if (subcategory_id) {
-			products = await Product.find({ subcategory_id })
+			;[products, count] = await Promise.all([
+				Product.find({ subcategory_id })
+					.limit(limit)
+					.skip((page - 1) * limit)
+					.sort({ createdAt: -1 }),
+				Product.countDocuments({ subcategory_id }),
+			])
 		} else {
-			products = await Product.find().populate('subcategory_id')
+			;[products, count] = await Promise.all([
+				Product.find()
+					.limit(limit)
+					.skip((page - 1) * limit)
+					.sort({ createdAt: -1 })
+					.populate('subcategory_id'),
+				Product.countDocuments(),
+			])
 		}
 
 		if (!products.length) {
@@ -63,7 +79,38 @@ async function listProducts(subcategory_id) {
 
 		console.log(chalk.bgGreen('Продукты успешно получены'))
 
-		return products
+		return { products, lastPage: Math.ceil(count / limit) }
+	} catch (err) {
+		console.log(
+			chalk.bgRed(`При получении продуктов пошло что-то не так: ${err.message}`),
+		)
+		throw new Error(err.message || 'Неизвестная ошибка...')
+	}
+}
+
+async function listProductsAll(search = '', limit = 10, page = 1) {
+	try {
+		const searchTerms = [
+			{ name: { $regex: search, $options: 'i' } },
+			{ brand: { $regex: search, $options: 'i' } },
+			{ description: { $regex: search, $options: 'i' } },
+		]
+
+		const [products, count] = await Promise.all([
+			Product.find({
+				$or: searchTerms,
+			})
+				.limit(limit)
+				.skip((page - 1) * limit)
+				.sort({ createdAt: -1 }),
+			Product.countDocuments({
+				$or: searchTerms,
+			}),
+		])
+
+		console.log('search :>> ', search)
+
+		return { products, lastPage: Math.ceil(count / limit) }
 	} catch (err) {
 		console.log(
 			chalk.bgRed(`При получении продуктов пошло что-то не так: ${err.message}`),
@@ -131,4 +178,11 @@ async function deleteProduct(product_id) {
 	}
 }
 
-module.exports = { addProduct, getProduct, listProducts, editProduct, deleteProduct }
+module.exports = {
+	addProduct,
+	getProduct,
+	listProducts,
+	editProduct,
+	deleteProduct,
+	listProductsAll,
+}

@@ -27,17 +27,6 @@ async function getCategories() {
 				populate: { path: 'products' },
 			})
 
-		// console.log(categories)
-
-		// const simplifiedCategories = categories.map((category) => ({
-		// 	id: category._id,
-		// 	name: category.name,
-		// 	productCount: category.subcategories.reduce(
-		// 		(acc, subcategory) => acc + subcategory.products.length,
-		// 		0,
-		// 	),
-		// }))
-
 		console.log(chalk.bgGreen('Категории успешно получены'))
 
 		return categories

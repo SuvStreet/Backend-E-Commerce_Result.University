@@ -5,6 +5,7 @@ const {
 	listProducts,
 	editProduct,
 	deleteProduct,
+	listProductsAll,
 } = require('../controllers/product.controller')
 const hasRole = require('../middleware/hasRole')
 const authenticated = require('../middleware/authenticated')
@@ -15,11 +16,32 @@ const router = express.Router({ mergeParams: true })
 
 router.get('/sub-category/:id', async (req, res) => {
 	try {
-		const products = await listProducts(req.params.id)
+		const { products, lastPage } = await listProducts({
+			subcategory_id: req.params.id,
+			page: req.query.page,
+			limit: req.query.limit,
+		})
 
 		res.send({
 			error: null,
-			data: { products: products.map(mapProduct) },
+			data: { products: products.map(mapProduct), lastPage },
+		})
+	} catch (err) {
+		res.send({ error: err.message || 'Неизвестная ошибка...', data: null })
+	}
+})
+
+router.get('/search', async (req, res) => {
+	try {
+		const { products, lastPage } = await listProductsAll(
+			req.query.search,
+			req.query.limit,
+			req.query.page,
+		)
+
+		res.send({
+			error: null,
+			data: { products: products.map(mapProduct), lastPage },
 		})
 	} catch (err) {
 		res.send({ error: err.message || 'Неизвестная ошибка...', data: null })
@@ -28,7 +50,7 @@ router.get('/sub-category/:id', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
 	try {
-		const product = await getProduct(req.params.id, req.query.variant)
+		const product = await getProduct(req.params.id)
 
 		res.send({
 			error: null,
@@ -41,11 +63,11 @@ router.get('/:id', async (req, res) => {
 
 router.get('/', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 	try {
-		const products = await listProducts()
+		const { products, lastPage } = await listProducts({ page: req.query.page })
 
 		res.send({
 			error: null,
-			data: { products: products.map(mapProduct) },
+			data: { products: products.map(mapProduct), lastPage },
 		})
 	} catch (err) {
 		res.send({ error: err.message || 'Неизвестная ошибка...', data: null })
@@ -62,7 +84,7 @@ router.post('/add', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 	}
 })
 
-router.post('/edit/:id', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
+router.put('/edit/:id', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 	try {
 		const updatedProduct = await editProduct(req.params.id, req.body)
 

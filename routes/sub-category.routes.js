@@ -53,7 +53,7 @@ router.post('/add', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 	}
 })
 
-router.post('/edit/:id', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
+router.put('/edit/:id', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 	try {
 		const updatedSubCategory = await editSubCategory(
 			req.params.id,

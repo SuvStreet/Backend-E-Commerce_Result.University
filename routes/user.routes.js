@@ -41,7 +41,7 @@ router.get('/users', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 	}
 })
 
-router.patch('/:id', authenticated, async (req, res) => {
+router.put('/:id', authenticated, async (req, res) => {
 	try {
 		const newUser = await editUser(req.params.id, {
 			login: req.body.login,
@@ -59,7 +59,7 @@ router.patch('/:id', authenticated, async (req, res) => {
 	}
 })
 
-router.patch('/role/:id', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
+router.put('/role/:id', authenticated, hasRole([ROLE.ADMIN]), async (req, res) => {
 	try {
 		const updatedUser = await editUserRole(req.params.id, { role_id: req.body.roleId })
 

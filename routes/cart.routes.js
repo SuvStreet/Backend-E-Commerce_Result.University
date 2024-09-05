@@ -31,7 +31,7 @@ router.post('/add', authenticated, async (req, res) => {
 	}
 })
 
-router.post('/update/:id', authenticated, async (req, res) => {
+router.put('/update/:id', authenticated, async (req, res) => {
 	try {
 		const updatedCart = await updateCart(
 			req.params.id,
