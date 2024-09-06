@@ -1,6 +1,7 @@
 const Product = require('../models/Product')
 const chalk = require('chalk')
 const SubCategory = require('../models/Sub-category')
+const { default: mongoose } = require('mongoose')
 
 async function addProduct(dataProducts) {
 	try {
@@ -51,23 +52,31 @@ async function listProducts({ subcategory_id, page = 1, limit = 5 }) {
 	try {
 		let products = []
 		let count = 0
-
-		console.log('subcategory_id :>> ', subcategory_id)
+		let filter = []
 
 		if (subcategory_id) {
-			;[products, count] = await Promise.all([
+			;[products, count, filter] = await Promise.all([
 				Product.find({ subcategory_id })
 					.limit(limit)
-					.skip((page - 1) * limit)
-					.sort({ createdAt: -1 }),
+					.skip((page - 1) * limit),
 				Product.countDocuments({ subcategory_id }),
+				Product.aggregate([
+					{ $match: { subcategory_id: new mongoose.Types.ObjectId(subcategory_id) } },
+					{
+						$group: {
+							_id: null,
+							minPrice: { $min: '$price' },
+							maxPrice: { $max: '$price' },
+							brand: { $addToSet: '$brand' },
+						},
+					},
+				]),
 			])
 		} else {
 			;[products, count] = await Promise.all([
 				Product.find()
 					.limit(limit)
 					.skip((page - 1) * limit)
-					.sort({ createdAt: -1 })
 					.populate('subcategory_id'),
 				Product.countDocuments(),
 			])
@@ -77,9 +86,11 @@ async function listProducts({ subcategory_id, page = 1, limit = 5 }) {
 			throw new Error('Продукты не найдены!')
 		}
 
+		const { minPrice, maxPrice, brand } = filter[0] || []
+
 		console.log(chalk.bgGreen('Продукты успешно получены'))
 
-		return { products, lastPage: Math.ceil(count / limit) }
+		return { products, lastPage: Math.ceil(count / limit), minPrice, maxPrice, brand }
 	} catch (err) {
 		console.log(
 			chalk.bgRed(`При получении продуктов пошло что-то не так: ${err.message}`),
@@ -107,8 +118,6 @@ async function listProductsAll(search = '', limit = 10, page = 1) {
 				$or: searchTerms,
 			}),
 		])
-
-		console.log('search :>> ', search)
 
 		return { products, lastPage: Math.ceil(count / limit) }
 	} catch (err) {

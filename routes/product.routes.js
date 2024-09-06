@@ -16,7 +16,7 @@ const router = express.Router({ mergeParams: true })
 
 router.get('/sub-category/:id', async (req, res) => {
 	try {
-		const { products, lastPage } = await listProducts({
+		const { products, lastPage, minPrice, maxPrice, brand } = await listProducts({
 			subcategory_id: req.params.id,
 			page: req.query.page,
 			limit: req.query.limit,
@@ -24,7 +24,7 @@ router.get('/sub-category/:id', async (req, res) => {
 
 		res.send({
 			error: null,
-			data: { products: products.map(mapProduct), lastPage },
+			data: { products: products.map(mapProduct), lastPage, minPrice, maxPrice, brand },
 		})
 	} catch (err) {
 		res.send({ error: err.message || 'Неизвестная ошибка...', data: null })
