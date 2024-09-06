@@ -60,9 +60,44 @@ async function createOrder(cart, user_id) {
 	}
 }
 
+async function listOrders({ page }) {
+	try {
+		const limit = 5
+		const offset = limit * (page - 1)
+
+		const [orders, count] = await Promise.all([
+			Order.find().limit(limit).skip(offset).populate('user_id'),
+			Order.countDocuments(),
+		])
+
+		return { orders, lastPage: Math.ceil(count / limit) }
+	} catch (err) {
+		console.log(chalk.bgRed(`При получении заказов пошло что-то не так: ${err.message}`))
+		throw new Error(err.message || 'Неизвестная ошибка...')
+	}
+}
+
+async function getOrder(id) {
+	try {
+		const orderUser = await Order.find({
+			user_id: id,
+		})
+
+		if (!orderUser) {
+			throw new Error(`Заказ с ID ${id} не найден!`)
+		}
+
+		console.log(chalk.bgGreen('Заказ успешно получен!'))
+
+		return orderUser
+	} catch (err) {
+		console.log(chalk.bgRed(`При получении заказа пошло что-то не так: ${err.message}`))
+		throw new Error(err.message || 'Неизвестная ошибка...')
+	}
+}
+
 module.exports = {
 	createOrder,
-	// getOrder,
-	// listOrders,
-	// editOrder,
+	listOrders,
+	getOrder,
 }
